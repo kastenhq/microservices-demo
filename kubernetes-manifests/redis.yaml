@@ -12,6 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-cart-pvc-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,6 +38,9 @@ spec:
     spec:
       containers:
       - name: redis
+        command: ["redis-server"]
+        args:
+        - "--appendonly yes"
         image: redis:alpine
         ports:
         - containerPort: 6379
@@ -40,7 +54,7 @@ spec:
             port: 6379
         volumeMounts:
         - mountPath: /data
-          name: redis-data
+          name: redis-data-claim
         resources:
           limits:
             memory: 256Mi
@@ -49,8 +63,9 @@ spec:
             cpu: 70m
             memory: 200Mi
       volumes:
-      - name: redis-data
-        emptyDir: {}
+      - name: redis-data-claim
+        persistentVolumeClaim:
+          claimName: redis-cart-pvc-claim
 ---
 apiVersion: v1
 kind: Service
