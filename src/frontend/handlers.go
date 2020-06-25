@@ -102,17 +102,14 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (plat *platformDetails) setPlatformDetails(env string) {
+	plat.provider = "Kasten Demo"
 	if env == "aws" {
-		plat.provider = "AWS"
 		plat.css = "aws-platform"
 	} else if env == "onprem" {
-		plat.provider = "On-Premises"
 		plat.css = "onprem-platform"
 	} else if env == "azure" {
-		plat.provider = "Azure"
 		plat.css = "azure-platform"
 	} else {
-		plat.provider = "Google Cloud"
 		plat.css = "gcp-platform"
 	}
 }
